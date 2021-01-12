@@ -30,13 +30,13 @@ export default class Login {
     }
 
     serialize(): ILogin {
-        const data: ILogin = {
+        const data: any = {
         };
         if (typeof this._password !== 'undefined') {
             data.password = this._password;
         }
         if (typeof this._username !== 'undefined') {
-            data.username = this._username;
+            data.name = this._username;
         }
         return data;
     }

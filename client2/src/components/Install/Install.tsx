@@ -4,7 +4,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { observer } from 'mobx-react-lite';
 
 import { IInitialConfigurationBeta } from 'Entities/InitialConfigurationBeta';
-import Icons from 'Lib/theme/Icons';
+import Icons from 'Common/ui/Icons';
 import {
     DEFAULT_DNS_ADDRESS,
     DEFAULT_DNS_PORT,

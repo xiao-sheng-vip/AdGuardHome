@@ -104,6 +104,7 @@ export enum AvailableLocales {
     ro = 'ro',
     ar = 'ar',
 }
+
 export const getPluralFormId = (locale: AvailableLocales, number: number) => {
     if (number === 0) {
         return 0;
