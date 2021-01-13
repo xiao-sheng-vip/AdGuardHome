@@ -2,7 +2,7 @@ import { Layout } from 'antd';
 import React, { FC } from 'react';
 
 interface CommonLayoutProps {
-    className: string;
+    className?: string;
 }
 
 const CommonLayout: FC<CommonLayoutProps> = ({ children, className }) => {

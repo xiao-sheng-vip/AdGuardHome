@@ -2,7 +2,7 @@
 // All changes will be overwrited on commit.
 export interface IServerStatus {
     dhcp_available?: boolean;
-    dns_address: string;
+    dns_addresses: string[];
     dns_port: number;
     language: string;
     protection_enabled: boolean;
@@ -18,18 +18,18 @@ export default class ServerStatus {
         return this._dhcp_available;
     }
 
-    readonly _dns_address: string;
+    readonly _dns_addresses: string[];
 
     /**
      * Description: undefined
      * Example: 127.0.0.1
      */
-    get dnsAddress(): string {
-        return this._dns_address;
+    get dnsAddresses(): string[] {
+        return this._dns_addresses;
     }
 
-    static dnsAddressValidate(dnsAddress: string): boolean {
-        return typeof dnsAddress === 'string' && !!dnsAddress.trim();
+    static dnsAddressesValidate(dnsAddresses: string[]): boolean {
+        return dnsAddresses.reduce<boolean>((result, p) => result && (typeof p === 'string' && !!p.trim()), true);
     }
 
     readonly _dns_port: number;
@@ -116,7 +116,7 @@ export default class ServerStatus {
         if (typeof props.dhcp_available === 'boolean') {
             this._dhcp_available = props.dhcp_available;
         }
-        this._dns_address = props.dns_address.trim();
+        this._dns_addresses = props.dns_addresses;
         this._dns_port = props.dns_port;
         this._language = props.language.trim();
         this._protection_enabled = props.protection_enabled;
@@ -127,7 +127,7 @@ export default class ServerStatus {
 
     serialize(): IServerStatus {
         const data: IServerStatus = {
-            dns_address: this._dns_address,
+            dns_addresses: this._dns_addresses,
             dns_port: this._dns_port,
             language: this._language,
             protection_enabled: this._protection_enabled,
@@ -143,7 +143,7 @@ export default class ServerStatus {
 
     validate(): string[] {
         const validate = {
-            dns_address: typeof this._dns_address === 'string' && !this._dns_address ? true : this._dns_address,
+            dns_addresses: this._dns_addresses.reduce((result, p) => result && typeof p === 'string', true),
             dns_port: this._dns_port >= 1 && this._dns_port <= 65535,
             protection_enabled: typeof this._protection_enabled === 'boolean',
             dhcp_available: !this._dhcp_available ? true : typeof this._dhcp_available === 'boolean',
