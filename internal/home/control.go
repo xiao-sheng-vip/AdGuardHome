@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/AdguardTeam/AdGuardHome/internal/dnsforward"
+	"github.com/AdguardTeam/AdGuardHome/internal/version"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/NYTimes/gziphandler"
 )
@@ -42,7 +43,7 @@ func addDNSAddress(dnsAddresses *[]string, addr string) {
 	*dnsAddresses = append(*dnsAddresses, addr)
 }
 
-func handleStatus(w http.ResponseWriter, r *http.Request) {
+func handleStatus(w http.ResponseWriter, _ *http.Request) {
 	c := dnsforward.FilteringConfig{}
 	if Context.dnsServer != nil {
 		Context.dnsServer.WriteDiskConfig(&c)
@@ -53,7 +54,7 @@ func handleStatus(w http.ResponseWriter, r *http.Request) {
 		"http_port":     config.BindPort,
 		"dns_port":      config.DNS.Port,
 		"running":       isRunning(),
-		"version":       versionString,
+		"version":       version.Version(),
 		"language":      config.Language,
 
 		"protection_enabled": c.ProtectionEnabled,
@@ -118,7 +119,7 @@ func registerControlHandlers() {
 }
 
 func httpRegister(method, url string, handler func(http.ResponseWriter, *http.Request)) {
-	if len(method) == 0 {
+	if method == "" {
 		// "/dns-query" handler doesn't need auth, gzip and isn't restricted by 1 HTTP method
 		Context.mux.HandleFunc(url, postInstall(handler))
 		return
@@ -139,7 +140,7 @@ func ensure(method string, handler func(http.ResponseWriter, *http.Request)) fun
 			return
 		}
 
-		if method == "POST" || method == "PUT" || method == "DELETE" {
+		if method == http.MethodPost || method == http.MethodPut || method == http.MethodDelete {
 			Context.controlLock.Lock()
 			defer Context.controlLock.Unlock()
 		}
@@ -149,11 +150,11 @@ func ensure(method string, handler func(http.ResponseWriter, *http.Request)) fun
 }
 
 func ensurePOST(handler func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
-	return ensure("POST", handler)
+	return ensure(http.MethodPost, handler)
 }
 
 func ensureGET(handler func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
-	return ensure("GET", handler)
+	return ensure(http.MethodGet, handler)
 }
 
 // Bridge between http.Handler object and Go function

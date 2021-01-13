@@ -19,8 +19,9 @@ The rules are mostly sorted in the alphabetical order.
     pkg: fix the network error logging issue
     ```
 
-    Where `pkg` is the package where most changes took place.  If there are
-    several such packages, or the change is top-level only, write `all`.
+    Where `pkg` is the directory or Go package (without the `internal/` part)
+    where most changes took place.  If there are several such packages, or the
+    change is top-level only, write `all`.
 
  *  Keep your commit messages, including headers, to eighty (**80**) columns.
 
@@ -44,6 +45,14 @@ The rules are mostly sorted in the alphabetical order.
  *  Avoid `init` and use explicit initialization functions instead.
 
  *  Avoid `new`, especially with structs.
+
+ *  Check against empty strings like this:
+
+    ```go
+    if s == "" {
+            // …
+    }
+    ```
 
  *  Constructors should validate their arguments and return meaningful errors.
     As a corollary, avoid lazy initialization.
