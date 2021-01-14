@@ -11,7 +11,7 @@ import ServerStatus, { IServerStatus } from 'Entities/ServerStatus';
 import Stats, { IStats } from 'Entities/Stats';
 import StatsConfig, { IStatsConfig } from 'Entities/StatsConfig';
 import TlsConfig, { ITlsConfig } from 'Entities/TlsConfig';
-import ClientsFindEntry, { IClientsFindEntry } from 'Entities/ClientsFindEntry';
+import { IClientsFindEntry } from 'Entities/ClientsFindEntry';
 import ClientFindSubEntry from 'Entities/ClientFindSubEntry';
 
 export default class Dashboard {
