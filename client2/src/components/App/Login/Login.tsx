@@ -10,12 +10,12 @@ import s from './Login.module.pcss';
 const Login: FC = observer(() => {
     const store = useContext(Store);
     const { ui: { intl }, login } = store;
-    const [username, setUsername] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
 
     const onSubmit = () => {
         login.login({
-            username,
+            name,
             password,
         });
     };
@@ -25,9 +25,9 @@ const Login: FC = observer(() => {
                 <Input
                     name="login"
                     type="text"
-                    placeholder={intl.getMessage('username')}
-                    value={username}
-                    onChange={(e) => setUsername(e)}
+                    placeholder={intl.getMessage('name')}
+                    value={name}
+                    onChange={(e) => setName(e)}
                 />
                 <Input
                     name="login"

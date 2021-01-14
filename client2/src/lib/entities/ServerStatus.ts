@@ -4,9 +4,9 @@ export interface IServerStatus {
     dhcp_available?: boolean;
     dns_addresses: string[];
     dns_port: number;
+    http_port: number;
     language: string;
     protection_enabled: boolean;
-    querylog_enabled: boolean;
     running: boolean;
     version: string;
 }
@@ -54,6 +54,28 @@ export default class ServerStatus {
         return dnsPort >= 1 && dnsPort <= 65535;
     }
 
+    readonly _http_port: number;
+
+    /**
+     * Description: undefined
+     * Example: 80
+     */
+    get httpPort(): number {
+        return this._http_port;
+    }
+
+    static get httpPortMinValue() {
+        return 1;
+    }
+
+    static get httpPortMaxValue() {
+        return 65535;
+    }
+
+    static httpPortValidate(httpPort: number): boolean {
+        return httpPort >= 1 && httpPort <= 65535;
+    }
+
     readonly _language: string;
 
     /**
@@ -76,16 +98,6 @@ export default class ServerStatus {
 
     static protectionEnabledValidate(protectionEnabled: boolean): boolean {
         return typeof protectionEnabled === 'boolean';
-    }
-
-    readonly _querylog_enabled: boolean;
-
-    get querylogEnabled(): boolean {
-        return this._querylog_enabled;
-    }
-
-    static querylogEnabledValidate(querylogEnabled: boolean): boolean {
-        return typeof querylogEnabled === 'boolean';
     }
 
     readonly _running: boolean;
@@ -118,9 +130,9 @@ export default class ServerStatus {
         }
         this._dns_addresses = props.dns_addresses;
         this._dns_port = props.dns_port;
+        this._http_port = props.http_port;
         this._language = props.language.trim();
         this._protection_enabled = props.protection_enabled;
-        this._querylog_enabled = props.querylog_enabled;
         this._running = props.running;
         this._version = props.version.trim();
     }
@@ -129,9 +141,9 @@ export default class ServerStatus {
         const data: IServerStatus = {
             dns_addresses: this._dns_addresses,
             dns_port: this._dns_port,
+            http_port: this._http_port,
             language: this._language,
             protection_enabled: this._protection_enabled,
-            querylog_enabled: this._querylog_enabled,
             running: this._running,
             version: this._version,
         };
@@ -145,9 +157,9 @@ export default class ServerStatus {
         const validate = {
             dns_addresses: this._dns_addresses.reduce((result, p) => result && typeof p === 'string', true),
             dns_port: this._dns_port >= 1 && this._dns_port <= 65535,
+            http_port: this._http_port >= 1 && this._http_port <= 65535,
             protection_enabled: typeof this._protection_enabled === 'boolean',
             dhcp_available: !this._dhcp_available ? true : typeof this._dhcp_available === 'boolean',
-            querylog_enabled: typeof this._querylog_enabled === 'boolean',
             running: typeof this._running === 'boolean',
             version: typeof this._version === 'string' && !this._version ? true : this._version,
             language: typeof this._language === 'string' && !this._language ? true : this._language,
