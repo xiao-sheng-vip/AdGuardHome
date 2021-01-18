@@ -1,12 +1,16 @@
-import typography from './Typography.module.pcss';
 import form from './Form.module.pcss';
+import text from './Text.module.pcss';
+import install from './Install.module.pcss';
+import link from './Link.module.pcss';
 
 import { colors } from './colors';
 
 const theme = {
-    typography,
     form,
     chartColors: colors,
+    text,
+    install,
+    link,
 };
 
 export default theme;
