@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import Store from 'Store';
 import { CommonLayout } from 'Common/ui/layouts';
 import theme from 'Lib/theme';
-import { BlockCard } from './components';
+import { BlockCard, TopClients } from './components';
 
 import s from './Dashboard.module.pcss';
 
@@ -98,6 +98,11 @@ const Dashboard:FC = observer(() => {
                         </Col>
                         <Col span={12}></Col>
                     </Row>
+                </Col>
+            </Row>
+            <Row gutter={[24, 24]}>
+                <Col span={18}>
+                    <TopClients />
                 </Col>
             </Row>
         </CommonLayout>

@@ -1,6 +1,8 @@
+import React from 'react';
 import { makeAutoObservable, observable } from 'mobx';
+import { translate } from '@adguard/translate';
 
-import Translator, { DEFAULT_LOCALE, messages, Locale, reactFormater } from 'Localization';
+import { Locale, DEFAULT_LOCALE, i18n } from 'Localization';
 import { Store } from 'Store';
 import { Store as InstallStore } from 'Store/installStore';
 
@@ -9,7 +11,7 @@ export default class UI {
 
     currentLang = DEFAULT_LOCALE;
 
-    intl = new Translator<Locale>(Locale.en, messages, DEFAULT_LOCALE, reactFormater);
+    intl = translate.createReactTranslator<any>(i18n(this.currentLang), React);
 
     constructor(rootStore: Store | InstallStore) {
         this.rootStore = rootStore;
@@ -21,6 +23,6 @@ export default class UI {
 
     updateLang = (lang: Locale) => {
         this.currentLang = lang;
-        this.intl = this.intl.updateTranslator(lang);
+        this.intl = translate.createReactTranslator<any>(i18n(this.currentLang), React);
     };
 }

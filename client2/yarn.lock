@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@adguard/translate@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@adguard/translate/-/translate-0.2.0.tgz#6b74b037167ec0cae32e6b7423cb35eb1b08a1b3"
+  integrity sha512-zvpaEKMABcCCuEr7WpGRGgfdzp8L0OMuM0KUI7uwWapX+/i75ifffbWnKxi/LUdZDJu8kJPnmLN/DD5hngZuQQ==
+
 "@ant-design/colors@^3.1.0":
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@ant-design/colors/-/colors-3.2.2.tgz#5ad43d619e911f3488ebac303d606e66a8423903"

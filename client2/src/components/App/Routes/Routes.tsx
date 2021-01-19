@@ -10,6 +10,7 @@ import { Paths } from './Paths';
 import Dashboard from '../Dashboard';
 import Login from '../Login';
 import Sidebar from '../Sidebar';
+import Header from '../Header';
 
 import s from './Routes.module.pcss';
 
@@ -25,16 +26,19 @@ const AppRoutes: FC = observer(() => {
     return (
         <Layout className={s.app}>
             <Sidebar />
-            <Content>
-                <Switch>
-                    <Route
-                        exact
-                        path={Paths.Dashboard}
-                        component={Dashboard}
-                    />
-                    <Redirect to={Paths.Dashboard} />
-                </Switch>
-            </Content>
+            <Layout>
+                <Header />
+                <Content>
+                    <Switch>
+                        <Route
+                            exact
+                            path={Paths.Dashboard}
+                            component={Dashboard}
+                        />
+                        <Redirect to={Paths.Dashboard} />
+                    </Switch>
+                </Content>
+            </Layout>
         </Layout>
     );
 });
