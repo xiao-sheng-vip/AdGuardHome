@@ -24,8 +24,6 @@ const Dashboard:FC = observer(() => {
         return null;
     }
 
-    console.log(dashboard);
-
     const { stats } = dashboard;
 
     if (!stats) {

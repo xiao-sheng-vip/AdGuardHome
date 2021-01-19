@@ -6,9 +6,13 @@ const pathBuilder = (path: string) => (`${BasicPath}${path}`);
 
 export enum RoutePath {
     Dashboard = 'Dashboard',
+    Login = 'Login',
+    ForgotPassword = 'ForgotPassword',
 }
 export const Paths: Record<RoutePath, string> = {
     Dashboard: pathBuilder('dashboard'),
+    Login: pathBuilder('login'),
+    ForgotPassword: pathBuilder('forgot_password'),
 };
 
 export enum LinkParamsKeys {}
@@ -17,11 +21,11 @@ export type LinkParams = Partial<Record<LinkParamsKeys, string | number>>;
 
 export const linkPathBuilder = (
     route: RoutePath,
-    lang?: Locale,
     params?: LinkParams,
+    lang?: Locale,
     query?: Partial<Record<QueryParams, string | number | boolean>>,
 ) => {
-    let path = Paths[route].replace(BasicPath, `/${lang}`);
+    let path = Paths[route]; //  .replace(BasicPath, `/${lang}`);
     if (params) {
         Object.keys(params).forEach((key: unknown) => {
             path = path.replace(`:${key}`, String(params[key as LinkParamsKeys]));

@@ -7,6 +7,18 @@
     "next": "Next",
     "port": "Port",
     "router": "Router",
+    "username": "Username",
+    "sign_in": "Sign in",
+
+    "login_password_title": "Reset Password",
+    "login_password_link": "Forgot password?",
+    "login_password_hash": "AdGuard Home stores passwords as a BCrypt-encoded hash. Here's what you need to do to change the password:",
+    "login_password_step_1": "Stop AdGuard Home",
+    "login_password_step_2": "Edit <code>AdGuardHome.yaml</code>",
+    "login_password_step_3": "Find <code>password</code> field there",
+    "login_password_step_4": "Replace it with the new value. You can use .htpasswd password generator tool or any online BCrypt generator tool (there are many available online).",
+    "login_password_step_5": "Start AdGuard Home",
+    "login_password_result": "Now you'll be able to log in to web interface using your new password.",
 
     "install_admin_interface_port_desc": "Now it is working at 3000 port, just in case, but we recomended to use 80 port. Using this ports allow to access to Web interface like to common site",
     "install_admin_interface_port": "Which port will be used",

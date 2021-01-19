@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Layout } from 'antd';
 import { Formik, FormikHelpers } from 'formik';
 import { observer } from 'mobx-react-lite';
+import cn from 'classnames';
 
 import { IInitialConfigurationBeta } from 'Entities/InitialConfigurationBeta';
 import Icons from 'Common/ui/Icons';
@@ -109,8 +110,8 @@ const InstallForm: FC = observer(() => {
 
 const Install: FC = () => {
     return (
-        <Layout className={theme.install.layout}>
-            <Content className={theme.install.container}>
+        <Layout className={cn(theme.content.content, theme.content.content_auth)}>
+            <Content className={cn(theme.content.container, theme.content.container_auth)}>
                 <InstallForm />
             </Content>
             <Icons/>

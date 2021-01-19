@@ -52,7 +52,7 @@ const Link: FC<LinkProps> = ({
             id={id}
             className={className}
             type={type}
-            to={linkPathBuilder(to, undefined, props)}
+            to={linkPathBuilder(to, props)}
             onClick={handleClick}
         >
             {children}

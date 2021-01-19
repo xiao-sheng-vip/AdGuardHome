@@ -33,10 +33,11 @@ export default class Login {
 
     * login(login: ILogin) {
         const response = yield globalApi.login(login);
-        const { result } = errorChecker(response);
+        const { result, error } = errorChecker(response);
         if (result === 200) {
             this.loggedIn = true;
+            return;
         }
-        // TODO: add error check
+        return error;
     }
 }

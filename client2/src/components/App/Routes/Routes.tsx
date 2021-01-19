@@ -1,4 +1,3 @@
-/* eslint-disable no-else-return */
 import React, { FC, useContext } from 'react';
 import { Layout } from 'antd';
 import { Switch, Route, Redirect } from 'react-router-dom';
@@ -8,7 +7,7 @@ import Store from 'Store';
 import { Paths } from './Paths';
 
 import Dashboard from '../Dashboard';
-import Login from '../Login';
+import { Login, ForgotPassword } from '../Login';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
 
@@ -18,7 +17,19 @@ const { Content } = Layout;
 
 const AuthRoutes: FC = React.memo(() => {
     return (
-        <Login />
+        <Switch>
+            <Route
+                exact
+                path={Paths.Login}
+                component={Login}
+            />
+            <Route
+                exact
+                path={Paths.ForgotPassword}
+                component={ForgotPassword}
+            />
+            <Redirect to={Paths.Login} />
+        </Switch>
     );
 });
 
