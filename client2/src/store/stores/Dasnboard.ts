@@ -1,23 +1,21 @@
 import { flow, makeAutoObservable } from 'mobx';
 
 import clientsApi from 'Apis/clients';
-import globalApi from 'Apis/global';
 import statsApi from 'Apis/stats';
 import tlsApi from 'Apis/tls';
 
 import { errorChecker } from 'Helpers/apiErrors';
 import { Store } from 'Store';
-import ServerStatus, { IServerStatus } from 'Entities/ServerStatus';
 import Stats, { IStats } from 'Entities/Stats';
 import StatsConfig, { IStatsConfig } from 'Entities/StatsConfig';
 import TlsConfig, { ITlsConfig } from 'Entities/TlsConfig';
 import { IClientsFindEntry } from 'Entities/ClientsFindEntry';
 import ClientFindSubEntry from 'Entities/ClientFindSubEntry';
 
-export default class Dashboard {
-    rootStore: Store;
+import { IStore } from './utils';
 
-    status: ServerStatus | undefined;
+export default class Dashboard implements IStore {
+    rootStore: Store;
 
     stats: Stats | undefined;
 
@@ -34,7 +32,6 @@ export default class Dashboard {
         makeAutoObservable(this, {
             rootStore: false,
             init: flow,
-            getServerStatus: flow,
             getStatsConfig: flow,
             getTlsConfig: flow,
             getClient: flow,
@@ -46,7 +43,6 @@ export default class Dashboard {
     }
 
     * init() {
-        yield this.getServerStatus();
         yield this.getStatsConfig();
         yield this.getTlsConfig();
         yield this.getStats();
@@ -75,14 +71,6 @@ export default class Dashboard {
                 this.clientsInfo = new Map();
                 this.clientsInfo.set(ip, new ClientFindSubEntry(data));
             }
-        }
-    }
-
-    * getServerStatus() {
-        const response = yield globalApi.status();
-        const { result } = errorChecker<IServerStatus>(response);
-        if (result) {
-            this.status = new ServerStatus(result);
         }
     }
 

@@ -26,7 +26,7 @@ export const DEFAULT_LOCALE = Locale.en;
 export const LANGUAGES: { code: Locale; name: string }[] = [
     {
         code: Locale.en,
-        name: 'English',
+        name: 'Eng',
     },
     {
         code: Locale.ru,

@@ -9,6 +9,7 @@
     "router": "Router",
     "username": "Username",
     "sign_in": "Sign in",
+    "disable": "Disable",
 
     "login_password_title": "Reset Password",
     "login_password_link": "Forgot password?",
@@ -56,5 +57,10 @@
     "install_configure_android": "<p>From the Android Menu home screen, tap Settings.</p><p>Tap Wi-Fi on the menu. The screen listing all of the available networks will be shown (it is impossible to set custom DNS for mobile connection).</p><p>Long press the network you're connected to, and tap Modify Network.</p><p>On some devices, you may need to check the box for Advanced to see further settings. To adjust your Android DNS settings, you will need to switch the IP settings from DHCP to Static.</p><p>Change set DNS 1 and DNS 2 values to your AdGuard Home server addresses.</p>",
     "install_configure_ios": "<p>From the home screen, tap Settings.</p><p>Choose Wi-Fi in the left menu (it is impossible to configure DNS for mobile networks).</p><p>Tap on the name of the currently active network.</p><p>In the DNS field enter your AdGuard Home server addresses.</p>",
     "install_configure_adresses": "AdGuard Home addresses:",
-    "install_configure_dhcp": "You can't set a custom DNS server on some types of routers. In this case it may help if you set up <dhcp>AdGuard Home as a DHCP server</dhcp>. Otherwise, you should search for the manual on how to customize DNS servers for your particular router model."
+    "install_configure_dhcp": "You can't set a custom DNS server on some types of routers. In this case it may help if you set up <dhcp>AdGuard Home as a DHCP server</dhcp>. Otherwise, you should search for the manual on how to customize DNS servers for your particular router model.",
+
+    "header_adguard_status_enabled": "AdGuard Home is enabled",
+    "header_adguard_status_disabled": "AdGuard Home is enabled",
+    "header_server_uptime": "Server uptime is 2w 1d 3h"
+
 }

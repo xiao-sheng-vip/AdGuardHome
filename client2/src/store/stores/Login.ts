@@ -3,7 +3,7 @@ import globalApi from 'Apis/global';
 
 import { Store } from 'Store';
 import { errorChecker } from 'Helpers/apiErrors';
-import { IProfileInfo } from 'Entities/ProfileInfo';
+import ProfileInfo, { IProfileInfo } from 'Entities/ProfileInfo';
 import { ILogin } from 'Entities/Login';
 
 export default class Login {
@@ -24,9 +24,10 @@ export default class Login {
 
     * checkLoggedIn() {
         const response = yield globalApi.getProfile();
-        const { error } = errorChecker<IProfileInfo>(response);
-        if (!error) {
+        const { result } = errorChecker<IProfileInfo>(response);
+        if (result) {
             this.loggedIn = true;
+            this.rootStore.system.setProfile(new ProfileInfo(result));
         }
         // TODO: make smth with result, to not duplicate the request;
     }
