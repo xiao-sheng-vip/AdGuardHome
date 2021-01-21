@@ -21,12 +21,13 @@ export const messages: Record<Locale, Record<string, string>> = {
     [Locale.en]: enLang,
 };
 
+// TODO get languages and default locale from .twosky file
 export const DEFAULT_LOCALE = Locale.en;
 
 export const LANGUAGES: { code: Locale; name: string }[] = [
     {
         code: Locale.en,
-        name: 'Eng',
+        name: 'English',
     },
     {
         code: Locale.ru,

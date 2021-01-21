@@ -9,6 +9,17 @@
     "router": "Router",
     "username": "Username",
     "sign_in": "Sign in",
+    "sign_out": "Sign out",
+    "dashboard": "Dashboard",
+    "setup_guide": "Setup guide",
+    "query_log": "Query Log",
+    "filters": "Filters",
+    "settings": "Settings",
+    "general_settings": "General settings",
+    "dns_settings": "DNS settings",
+    "encryption_settings": "Encryption settings",
+    "client_settings": "Client settings",
+    "dhcp_settings": "DHCP settings",
     "disable": "Disable",
     "enable": "Enable",
 
@@ -62,11 +73,10 @@
 
     "header_adguard_status_enabled": "AdGuard Home is enabled",
     "header_adguard_status_disabled": "AdGuard Home is disabled",
-    "header_server_uptime": "Server uptime is 2w 1d 3h",
+    "header_server_uptime": "Server uptime is %value%",
 
     "top_clients": "Top clients",
     "client_table_header": "Client",
     "requests": "Requests",
     "show_blocked_responses": "Blocked"
-
 }

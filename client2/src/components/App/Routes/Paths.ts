@@ -6,11 +6,36 @@ const pathBuilder = (path: string) => (`${BasicPath}${path}`);
 
 export enum RoutePath {
     Dashboard = 'Dashboard',
+    FiltersBlocklist = 'FiltersBlocklist',
+    FiltersAllowlist = 'FiltersAllowlist',
+    FiltersRewrites = 'FiltersRewrites',
+    FiltersServices = 'FiltersServices',
+    FiltersCustom = 'FiltersCustom',
+    QueryLog = 'QueryLog',
+    SetupGuide = 'SetupGuide',
+    SettingsGeneral = 'SettingsGeneral',
+    SettingsDns = 'SettingsDns',
+    SettingsEncryption = 'SettingsEncryption',
+    SettingsClients = 'SettingsClients',
+    SettingsDhcp = 'SettingsDhcp',
     Login = 'Login',
     ForgotPassword = 'ForgotPassword',
 }
+
 export const Paths: Record<RoutePath, string> = {
     Dashboard: pathBuilder('dashboard'),
+    FiltersBlocklist: pathBuilder('filters/blocklists'),
+    FiltersAllowlist: pathBuilder('filters/allowlists'),
+    FiltersRewrites: pathBuilder('filters/rewrites'),
+    FiltersServices: pathBuilder('filters/services'),
+    FiltersCustom: pathBuilder('filters/custom'),
+    QueryLog: pathBuilder('logs'),
+    SetupGuide: pathBuilder('guide'),
+    SettingsGeneral: pathBuilder('settings/general'),
+    SettingsDns: pathBuilder('settings/dns'),
+    SettingsEncryption: pathBuilder('settings/encryption'),
+    SettingsClients: pathBuilder('settings/clients'),
+    SettingsDhcp: pathBuilder('settings/dhcp'),
     Login: pathBuilder('login'),
     ForgotPassword: pathBuilder('forgot_password'),
 };

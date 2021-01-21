@@ -52,7 +52,6 @@ export default class System implements IStore {
     }
 
     * getServerStatus() {
-        console.log('hello');
         const response = yield globalApi.status();
         const { result } = errorChecker<IServerStatus>(response);
         if (result) {

@@ -1,60 +1,59 @@
 import React, { FC, useContext } from 'react';
+import { Button } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
-import { Layout } from 'antd';
 
-import { Icon } from 'Common/ui';
-import { Button } from 'Common/controls';
+import { Icon, LangSelect } from 'Common/ui';
 import Store from 'Store';
-import { LANGUAGES } from 'Localization';
 
 import s from './Header.module.pcss';
 
-const { Header: AntdHeader } = Layout;
-
 const Header: FC = observer(() => {
     const store = useContext(Store);
-    const { ui: { intl, currentLang }, system } = store;
+    const { ui: { intl }, system, ui } = store;
     const { status, profile } = system;
 
     const updateServerStatus = () => {
         system.switchServerStatus(!status?.protectionEnabled);
     };
+
     return (
-        <AntdHeader className={s.header}>
-            <div className={s.content}>
-                <Icon icon="logo_shield" />
+        <div className={s.header}>
+            <div className={s.top}>
+                <Button
+                    icon={<MenuOutlined />}
+                    className={s.menu}
+                    onClick={() => ui.toggleSidebar()}
+                />
+            </div>
+            <div className={s.bottom}>
                 <div className={s.status}>
+                    <Icon icon="logo_shield" className={s.icon} />
                     {status?.protectionEnabled
                         ? intl.getMessage('header_adguard_status_enabled')
                         : intl.getMessage('header_adguard_status_disabled')}
                 </div>
                 <Button
-                    type="border"
+                    type="ghost"
                     size="small"
-                    className={s.changeStatus}
+                    className={s.action}
                     onClick={updateServerStatus}
                 >
                     {status?.protectionEnabled
                         ? intl.getMessage('disable')
                         : intl.getMessage('enable')}
                 </Button>
-                <div className={s.serverUptime}>
-                    {/* TODO: add serverUptime */}
-                    {intl.getMessage('header_server_uptime')}
-                </div>
-                <Icon icon="user" className={s.userIcon} />
-                <div className={s.user}>
-                    { profile?.name }
-                </div>
-                <div className={s.langContainer}>
-                    { /* TODO: language selector */}
-                    <Icon icon="language" />
-                    <span className={s.lang}>
-                        {LANGUAGES.find((e) => e.code === currentLang)!.name}
-                    </span>
+                {profile?.name && (
+                    <div className={s.user}>
+                        <Icon icon="user" className={s.icon} />
+                        {profile?.name}
+                    </div>
+                )}
+                <div className={s.languages}>
+                    <LangSelect />
                 </div>
             </div>
-        </AntdHeader>
+        </div>
     );
 });
 
