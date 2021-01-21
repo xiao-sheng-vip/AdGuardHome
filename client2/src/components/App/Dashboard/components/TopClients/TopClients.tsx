@@ -2,7 +2,6 @@ import React, { FC, useContext } from 'react';
 import { Button } from 'antd';
 import cn from 'classnames';
 import { observer } from 'mobx-react-lite';
-import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 
 import Store from 'Store';
 
@@ -14,7 +13,6 @@ const TopClients: FC = observer(() => {
     const { clientsInfo, stats } = dashboard;
     const topClients = stats?.topClients;
     const clients = Array.from(clientsInfo.entries());
-    console.log(clients, clientsInfo);
     return (
         <div className={s.container}>
             <div className={s.title}>{intl.getMessage('Top Clients')}</div>

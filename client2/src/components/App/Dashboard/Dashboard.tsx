@@ -11,7 +11,7 @@ import { BlockCard } from './components';
 const Dashboard:FC = observer(() => {
     const store = useContext(Store);
 
-    const { ui: { intl }, dashboard } = store;
+    const { dashboard } = store;
 
     const { stats } = dashboard;
     if (!stats) {
@@ -20,11 +20,8 @@ const Dashboard:FC = observer(() => {
 
     const {
         numBlockedFiltering,
-        numDnsQueries,
         numReplacedParental,
         numReplacedSafebrowsing,
-        numReplacedSafesearch,
-        dnsQueries,
         replacedParental,
         replacedSafebrowsing,
         avgProcessingTime,

@@ -35,15 +35,10 @@ const Button: FC<ButtonProps> = ({
     disabled,
     htmlType,
     // icon,
-    iconClassName,
     id,
-    inGroup,
     onClick,
     onBlur,
     shape,
-    size,
-    type,
-    block,
 }) => {
     const buttonClass = cn(
         className,
