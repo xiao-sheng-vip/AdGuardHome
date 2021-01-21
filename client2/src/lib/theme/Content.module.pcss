@@ -10,11 +10,20 @@
             background-size: 100%;
         }
     }
+
+    &_dashboard {
+        min-height: calc(100vh - var(--header-height));
+    }
 }
 
 .container {
     width: 100%;
     margin: 0 auto;
+    padding: 16px;
+
+    @media (--m-viewport) {
+        padding: 16px 24px;
+    }
 
     &_auth {
         max-width: 432px;
