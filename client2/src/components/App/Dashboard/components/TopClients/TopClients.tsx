@@ -8,9 +8,20 @@ import s from './TopClients.module.pcss';
 const TopClients: FC = () => {
     const store = useContext(Store);
     const { ui: { intl }, dashboard } = store;
+    const { clientsInfo } = dashboard;
     return (
         <div className={s.container}>
-            <div>{intl.getMessage('Top Clients')}</div>
+            <div className={s.title}>{intl.getMessage('Top Clients')}</div>
+            <div className={s.content}>
+                <div className={s.tableTitle}>
+                    <div>{intl.getMessage('client_table_header')}</div>
+                    <div>{intl.getMessage('client_table_header')}</div>
+                    <div>{intl.getMessage('client_table_header')}</div>
+                    <div>{intl.getMessage('client_table_header')}</div>
+                    <div/>
+                    <div/>
+                </div>
+            </div>
         </div>
     );
 };

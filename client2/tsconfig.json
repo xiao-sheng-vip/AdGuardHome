@@ -32,7 +32,8 @@
       "react",
       "react-dom",
       "node"
-    ]
+    ],
+    "useDefineForClassFields": true
   },
   "include": ["src/**/*", "./declaration.d.ts"],
   "exclude": ["./node_modules/**/*", "./scripts/generator/**/*"]

@@ -22,6 +22,10 @@ export default class System implements IStore {
             getServerStatus: flow,
             init: flow,
             setProfile: action,
+            switchServerStatus: flow,
+            getProfile: flow,
+            status: observable,
+            profile: observable,
         });
         if (this.rootStore.login.loggedIn) {
             this.init();
@@ -48,10 +52,21 @@ export default class System implements IStore {
     }
 
     * getServerStatus() {
+        console.log('hello');
         const response = yield globalApi.status();
         const { result } = errorChecker<IServerStatus>(response);
         if (result) {
             this.status = new ServerStatus(result);
+        }
+    }
+
+    * switchServerStatus(enable: boolean) {
+        const response = yield globalApi.dnsConfig({
+            protection_enabled: enable,
+        });
+        const { result } = errorChecker(response);
+        if (result) {
+            yield this.getServerStatus();
         }
     }
 }

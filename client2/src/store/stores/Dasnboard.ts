@@ -1,4 +1,4 @@
-import { flow, makeAutoObservable } from 'mobx';
+import { flow, makeAutoObservable, observable } from 'mobx';
 
 import clientsApi from 'Apis/clients';
 import statsApi from 'Apis/stats';
@@ -25,8 +25,6 @@ export default class Dashboard implements IStore {
 
     tlsConfig: TlsConfig | undefined;
 
-    inited = false;
-
     constructor(rootStore: Store) {
         this.rootStore = rootStore;
         makeAutoObservable(this, {
@@ -35,6 +33,10 @@ export default class Dashboard implements IStore {
             getStatsConfig: flow,
             getTlsConfig: flow,
             getClient: flow,
+            stats: observable,
+            statsConfig: observable,
+            clientsInfo: observable,
+            tlsConfig: observable,
         });
         this.clientsInfo = new Map();
         if (this.rootStore.login.loggedIn) {
@@ -46,7 +48,6 @@ export default class Dashboard implements IStore {
         yield this.getStatsConfig();
         yield this.getTlsConfig();
         yield this.getStats();
-        this.inited = true;
     }
 
     * getStats() {

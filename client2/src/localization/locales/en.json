@@ -10,6 +10,7 @@
     "username": "Username",
     "sign_in": "Sign in",
     "disable": "Disable",
+    "enable": "Enable",
 
     "login_password_title": "Reset Password",
     "login_password_link": "Forgot password?",
@@ -60,7 +61,12 @@
     "install_configure_dhcp": "You can't set a custom DNS server on some types of routers. In this case it may help if you set up <dhcp>AdGuard Home as a DHCP server</dhcp>. Otherwise, you should search for the manual on how to customize DNS servers for your particular router model.",
 
     "header_adguard_status_enabled": "AdGuard Home is enabled",
-    "header_adguard_status_disabled": "AdGuard Home is enabled",
-    "header_server_uptime": "Server uptime is 2w 1d 3h"
+    "header_adguard_status_disabled": "AdGuard Home is disabled",
+    "header_server_uptime": "Server uptime is 2w 1d 3h",
+
+    "top_clients": "Top clients",
+    "client_table_header": "Client",
+    "requests": "Requests",
+    "show_blocked_responses": "Blocked"
 
 }

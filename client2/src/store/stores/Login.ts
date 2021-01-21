@@ -28,6 +28,7 @@ export default class Login {
         if (result) {
             this.loggedIn = true;
             this.rootStore.system.setProfile(new ProfileInfo(result));
+            this.rootStore.init();
         }
         // TODO: make smth with result, to not duplicate the request;
     }

@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext } from 'react';
 import { Row, Col } from 'antd';
 import { observer } from 'mobx-react-lite';
 
@@ -13,16 +13,6 @@ const Dashboard:FC = observer(() => {
     const store = useContext(Store);
 
     const { ui: { intl }, dashboard } = store;
-
-    useEffect(() => {
-        if (!dashboard.inited) {
-            dashboard.init();
-        }
-    }, [dashboard.inited]);
-
-    if (!dashboard.inited) {
-        return null;
-    }
 
     const { stats } = dashboard;
 
