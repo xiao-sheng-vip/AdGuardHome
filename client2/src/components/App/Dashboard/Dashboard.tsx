@@ -15,7 +15,6 @@ const Dashboard:FC = observer(() => {
     const { ui: { intl }, dashboard } = store;
 
     const { stats } = dashboard;
-
     if (!stats) {
         return null;
     }
