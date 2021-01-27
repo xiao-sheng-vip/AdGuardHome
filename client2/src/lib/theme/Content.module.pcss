@@ -1,9 +1,9 @@
 .content {
     min-height: 100vh;
-    background-color: var(--gray100);
 
     &_auth {
         @media (--m-viewport) {
+            background-color: var(--gray100);
             background-image: url('../../assets/img/install.png');
             background-position: center 20px;
             background-repeat: no-repeat;
@@ -11,7 +11,7 @@
         }
     }
 
-    &_dashboard {
+    &_inner {
         min-height: calc(100vh - var(--header-height));
     }
 }
@@ -21,8 +21,8 @@
     margin: 0 auto;
     padding: 16px;
 
-    @media (--m-viewport) {
-        padding: 16px 24px;
+    @media (--l-viewport) {
+        padding: 24px;
     }
 
     &_auth {
@@ -33,4 +33,19 @@
             padding: 40px 16px;
         }
     }
+}
+
+.header {
+    margin-bottom: 16px;
+    padding: 0 16px;
+
+    @media (--m-viewport) {
+        margin-bottom: 24px;
+        padding: 0 24px;
+    }
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 600;
 }
