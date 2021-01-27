@@ -1,19 +1,16 @@
 import React, { FC, useContext } from 'react';
 import { Row, Col } from 'antd';
 import { observer } from 'mobx-react-lite';
-import cn from 'classnames';
 
 import Store from 'Store';
-import { CommonLayout } from 'Common/ui/layouts';
+import { InnerLayout } from 'Common/ui/layouts';
 import theme from 'Lib/theme';
 import { BlockCard } from './components';
 
 const Dashboard:FC = observer(() => {
     const store = useContext(Store);
+    const { dashboard: { stats }, system: { status } } = store;
 
-    const { dashboard } = store;
-
-    const { stats } = dashboard;
     if (!stats) {
         return null;
     }
@@ -28,7 +25,7 @@ const Dashboard:FC = observer(() => {
         blockedFiltering,
     } = stats;
     return (
-        <CommonLayout className={cn(theme.content.content, theme.content.content_dashboard)}>
+        <InnerLayout title={`AdGuard Home ${status?.version}`}>
             <div className={theme.content.container}>
                 <Row gutter={[24, 24]}>
                     <Col span={24} md={12} />
@@ -84,7 +81,7 @@ const Dashboard:FC = observer(() => {
                     </Col>
                 </Row>
             </div>
-        </CommonLayout>
+        </InnerLayout>
     );
 });
 

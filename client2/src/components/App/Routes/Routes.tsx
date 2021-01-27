@@ -10,6 +10,7 @@ import Dashboard from '../Dashboard';
 import { Login, ForgotPassword } from '../Login';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
+import SetupGuide from '../SetupGuide';
 
 import s from './Routes.module.pcss';
 
@@ -45,6 +46,11 @@ const AppRoutes: FC = observer(() => {
                             exact
                             path={Paths.Dashboard}
                             component={Dashboard}
+                        />
+                        <Route
+                            exact
+                            path={Paths.SetupGuide}
+                            component={SetupGuide}
                         />
                         <Redirect to={Paths.Dashboard} />
                     </Switch>
