@@ -1,6 +1,6 @@
 // +build !race
 
-// TODO(e.burkov): remove this weird buildtag.
+// TODO(e.burkov): Remove this weird buildtag.
 
 package home
 
@@ -186,6 +186,6 @@ func TestHome(t *testing.T) {
 		time.Sleep(1 * time.Second)
 	}
 
-	cleanup()
+	cleanup(context.Background())
 	cleanupAlways()
 }

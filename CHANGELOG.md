@@ -10,11 +10,13 @@ and this project adheres to
 ## [Unreleased]
 
 <!--
-## [v0.105.0] - 2021-01-18
+## [v0.105.0] - 2021-01-27
 -->
 
 ### Added
 
+- Client ID support for DNS-over-HTTPS, DNS-over-QUIC, and DNS-over-TLS
+  ([#1383]).
 - `$dnsrewrite` modifier for filters ([#2102]).
 - The host checking API and the query logs API can now return multiple matched
   rules ([#2102]).
@@ -27,6 +29,7 @@ and this project adheres to
 - HTTP API request body size limit ([#2305]).
 
 [#1361]: https://github.com/AdguardTeam/AdGuardHome/issues/1361
+[#1383]: https://github.com/AdguardTeam/AdGuardHome/issues/1383
 [#2102]: https://github.com/AdguardTeam/AdGuardHome/issues/2102
 [#2302]: https://github.com/AdguardTeam/AdGuardHome/issues/2302
 [#2304]: https://github.com/AdguardTeam/AdGuardHome/issues/2304
@@ -35,6 +38,9 @@ and this project adheres to
 
 ### Changed
 
+- `workDir` now supports symlinks.
+- Stopped mounting together the directories `/opt/adguardhome/conf` and
+  `/opt/adguardhome/work` in our Docker images ([#2589]).
 - When `dns.bogus_nxdomain` option is used, the server will now transform
   responses if there is at least one bogus address instead of all of them
   ([#2394]).  The new behavior is the same as in `dnsmasq`.
@@ -44,18 +50,21 @@ and this project adheres to
   improve error response ([#2358]).
 - Improved HTTP requests handling and timeouts ([#2343]).
 - Our snap package now uses the `core20` image as its base ([#2306]).
-- New build system and various internal improvements ([#2276], [#2271],
-  [#2297]).
+- New build system and various internal improvements ([#2271], [#2276], [#2297],
+  [#2509], [#2552]).
 
 [#2231]: https://github.com/AdguardTeam/AdGuardHome/issues/2231
-[#2276]: https://github.com/AdguardTeam/AdGuardHome/issues/2276
 [#2271]: https://github.com/AdguardTeam/AdGuardHome/issues/2271
+[#2276]: https://github.com/AdguardTeam/AdGuardHome/issues/2276
 [#2297]: https://github.com/AdguardTeam/AdGuardHome/issues/2297
 [#2306]: https://github.com/AdguardTeam/AdGuardHome/issues/2306
 [#2343]: https://github.com/AdguardTeam/AdGuardHome/issues/2343
 [#2358]: https://github.com/AdguardTeam/AdGuardHome/issues/2358
 [#2391]: https://github.com/AdguardTeam/AdGuardHome/issues/2391
 [#2394]: https://github.com/AdguardTeam/AdGuardHome/issues/2394
+[#2509]: https://github.com/AdguardTeam/AdGuardHome/issues/2509
+[#2552]: https://github.com/AdguardTeam/AdGuardHome/issues/2552
+[#2589]: https://github.com/AdguardTeam/AdGuardHome/issues/2589
 
 ### Deprecated
 
@@ -66,6 +75,7 @@ and this project adheres to
 
 ### Fixed
 
+- Unnecessary conversions from `string` to `net.IP`, and vice versa ([#2508]).
 - Inability to set DNS cache TTL limits ([#2459]).
 - Possible freezes on slower machines ([#2225]).
 - A mitigation against records being shown in the wrong order on the query log
@@ -79,9 +89,13 @@ and this project adheres to
 [#2345]: https://github.com/AdguardTeam/AdGuardHome/issues/2345
 [#2355]: https://github.com/AdguardTeam/AdGuardHome/issues/2355
 [#2459]: https://github.com/AdguardTeam/AdGuardHome/issues/2459
+[#2508]: https://github.com/AdguardTeam/AdGuardHome/issues/2508
 
 ### Removed
 
+- The undocumented ability to use hostnames as any of `bind_host` values in
+  configuration.  Documentation requires them to be valid IP addresses, and now
+  the implementation makes sure that that is the case ([#2508]).
 - `Dockerfile` ([#2276]).  Replaced with the script
   `scripts/make/build-docker.sh` which uses `scripts/make/Dockerfile`.
 - Support for pre-v0.99.3 format of query logs ([#2102]).

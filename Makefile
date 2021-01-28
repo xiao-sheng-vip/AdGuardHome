@@ -68,11 +68,13 @@ js-build:
 js-deps:
 	$(NPM) $(NPM_FLAGS) ci
 	$(YARN) $(YARN_FLAGS) install
-js-lint:
-	$(NPM) $(NPM_FLAGS) run lint
-	$(YARN) $(YARN_FLAGS) lint
-js-test:
-	$(NPM) $(NPM_FLAGS) run test
+
+# TODO(a.garipov): Remove the legacy client tasks support once the new
+# client is done and the old one is removed.
+js-lint: ; $(NPM) $(NPM_FLAGS) run lint
+js-test: ; $(NPM) $(NPM_FLAGS) run test
+js-beta-lint: ; $(YARN) $(YARN_FLAGS) lint
+js-beta-test: ; # TODO(v.abdulmyanov): Add tests for the new client.
 
 go-build: ; $(ENV) "$(SHELL)" ./scripts/make/go-build.sh
 go-deps:  ; $(ENV) "$(SHELL)" ./scripts/make/go-deps.sh
@@ -80,7 +82,10 @@ go-lint:  ; $(ENV) "$(SHELL)" ./scripts/make/go-lint.sh
 go-test:  ; $(ENV) "$(SHELL)" ./scripts/make/go-test.sh
 go-tools: ; $(ENV) "$(SHELL)" ./scripts/make/go-tools.sh
 
+go-check: go-tools go-lint go-test
+
 openapi-lint: ; cd ./openapi/ && $(YARN) test
+openapi-show: ; cd ./openapi/ && $(YARN) start
 
 # TODO(a.garipov): Remove the legacy targets once the build
 # infrastructure stops using them.

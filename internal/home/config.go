@@ -1,7 +1,9 @@
 package home
 
 import (
+	"errors"
 	"io/ioutil"
+	"net"
 	"os"
 	"path/filepath"
 	"sync"
@@ -40,7 +42,7 @@ type configuration struct {
 	// It's reset after config is parsed
 	fileData []byte
 
-	BindHost     string `yaml:"bind_host"`      // BindHost is the IP address of the HTTP server to bind to
+	BindHost     net.IP `yaml:"bind_host"`      // BindHost is the IP address of the HTTP server to bind to
 	BindPort     int    `yaml:"bind_port"`      // BindPort is the port the HTTP server
 	BetaBindPort int    `yaml:"beta_bind_port"` // BetaBindPort is the port for new client
 	Users        []User `yaml:"users"`          // Users that can access HTTP server
@@ -74,7 +76,7 @@ type configuration struct {
 
 // field ordering is important -- yaml fields will mirror ordering from here
 type dnsConfig struct {
-	BindHost string `yaml:"bind_host"`
+	BindHost net.IP `yaml:"bind_host"`
 	Port     int    `yaml:"port"`
 
 	// time interval for statistics (in days)
@@ -121,9 +123,9 @@ type tlsConfigSettings struct {
 var config = configuration{
 	BindPort:     3000,
 	BetaBindPort: 0,
-	BindHost:     "0.0.0.0",
+	BindHost:     net.IP{0, 0, 0, 0},
 	DNS: dnsConfig{
-		BindHost:      "0.0.0.0",
+		BindHost:      net.IP{0, 0, 0, 0},
 		Port:          53,
 		StatsInterval: 1,
 		FilteringConfig: dnsforward.FilteringConfig{
@@ -178,7 +180,7 @@ func initConfig() {
 	config.DHCP.Conf4.ICMPTimeout = 1000
 	config.DHCP.Conf6.LeaseDuration = 86400
 
-	if ch := version.Channel(); ch == "edge" || ch == "development" {
+	if ch := version.Channel(); ch == version.ChannelEdge || ch == version.ChannelDevelopment {
 		config.BetaBindPort = 3001
 	}
 }
@@ -187,7 +189,7 @@ func initConfig() {
 func (c *configuration) getConfigFilename() string {
 	configFile, err := filepath.EvalSymlinks(Context.configFilename)
 	if err != nil {
-		if !os.IsNotExist(err) {
+		if !errors.Is(err, os.ErrNotExist) {
 			log.Error("unexpected error while config file path evaluation: %s", err)
 		}
 		configFile = Context.configFilename

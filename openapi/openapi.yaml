@@ -350,7 +350,26 @@
             'application/json':
               'schema':
                 '$ref': '#/components/schemas/DhcpStatus'
-        '501':
+        '500':
+          'content':
+            'application/json':
+              'schema':
+                '$ref': '#/components/schemas/Error'
+          'description': 'Not implemented (for example, on Windows).'
+  '/dhcp/interfaces':
+    'get':
+      'tags':
+      - 'dhcp'
+      'operationId': 'dhcpInterfaces'
+      'summary': 'Gets the available interfaces'
+      'responses':
+        '200':
+          'description': 'OK.'
+          'content':
+            'application/json':
+              'schema':
+                '$ref': '#/components/schemas/NetInterfaces'
+        '500':
           'content':
             'application/json':
               'schema':
@@ -775,11 +794,17 @@
       'tags':
       - 'clients'
       'operationId': 'clientsFind'
-      'summary': 'Get information about selected clients by their IP address'
+      'summary': >
+        Get information about clients by their IP addresses or client IDs.
       'parameters':
       - 'name': 'ip0'
         'in': 'query'
-        'description': 'Filter by IP address'
+        'description': >
+          Filter by IP address or client IDs.  Parameters with names `ip1`,
+          `ip2`, and so on are also accepted and interpreted as "ip0 OR ip1 OR
+          ip2".
+
+          TODO(a.garipov): Replace with a better query API.
         'schema':
           'type': 'string'
       'responses':
@@ -1090,6 +1115,13 @@
         'name': 'host'
         'schema':
           'type': 'string'
+      - 'description': >
+          Client ID.
+        'example': 'client-1'
+        'in': 'query'
+        'name': 'client_id'
+        'schema':
+          'type': 'string'
       'responses':
         '200':
           'description': 'DNS over HTTPS plist file.'
@@ -1115,6 +1147,13 @@
         'example': 'example.org'
         'in': 'query'
         'name': 'host'
+        'schema':
+          'type': 'string'
+      - 'description': >
+          Client ID.
+        'example': 'client-1'
+        'in': 'query'
+        'name': 'client_id'
         'schema':
           'type': 'string'
       'responses':
@@ -1433,7 +1472,13 @@
       'type': 'object'
       'description': >
         Information about the latest available version of AdGuard Home.
+      'required':
+      - 'disabled'
       'properties':
+        'disabled':
+          'type': 'boolean'
+          'description': >
+            If true then other fields doesn't appear.
         'new_version':
           'type': 'string'
           'example': 'v0.9'
@@ -1452,7 +1497,10 @@
       'properties':
         'time_units':
           'type': 'string'
-          'description': 'Time units (hours | days)'
+          'enum':
+          - 'hours'
+          - 'days'
+          'description': 'Time units'
           'example': 'hours'
         'num_dns_queries':
           'type': 'integer'
@@ -1620,6 +1668,12 @@
           'type': 'array'
           'items':
             '$ref': '#/components/schemas/DhcpStaticLease'
+    'NetInterfaces':
+      'type': 'object'
+      'description': >
+        Network interfaces dictionary, keys are interface names.
+      'additionalProperties':
+        '$ref': '#/components/schemas/NetInterface'
 
     'DhcpSearchResult':
       'type': 'object'
@@ -1650,7 +1704,12 @@
       'properties':
         'found':
           'type': 'string'
-          'description': 'yes|no|error'
+          'enum':
+          - 'yes'
+          - 'no'
+          - 'error'
+          'description': >
+            The result of searching the other DHCP server.
           'example': 'no'
         'error':
           'type': 'string'
@@ -1662,7 +1721,12 @@
       'properties':
         'static':
           'type': 'string'
-          'description': 'yes|no|error'
+          'enum':
+          - 'yes'
+          - 'no'
+          - 'error'
+          'description': >
+            The result of determining static IP address.
           'example': 'yes'
         'ip':
           'type': 'string'
@@ -1737,13 +1801,21 @@
         'answer_dnssec':
           'type': 'boolean'
         'client':
-          'type': 'string'
+          'description': >
+            The client's IP address.
           'example': '192.168.0.1'
+          'type': 'string'
+        'client_id':
+          'description': >
+            The client ID, if provided in DOH, DOQ, or DOT.
+          'example': 'cli123'
+          'type': 'string'
         'client_proto':
           'enum':
           - 'dot'
           - 'doh'
           - 'doq'
+          - 'dnscrypt'
           - ''
         'elapsedMs':
           'type': 'string'
@@ -1953,6 +2025,10 @@
       'properties':
         'flags':
           'type': 'string'
+          'description': >
+            Flags could be any combination of the following values, divided by
+            the "|" character: "up", "broadcast", "loopback", "pointtopoint" and
+            "multicast".
           'example': 'up|broadcast|multicast'
         'hardware_address':
           'type': 'string'
@@ -2015,11 +2091,7 @@
           'format': 'uint16'
           'example': 80
         'interfaces':
-          'type': 'object'
-          'description': >
-            Network interfaces dictionary, keys are interface names.
-          'additionalProperties':
-            '$ref': '#/components/schemas/NetInterface'
+          '$ref': '#/components/schemas/NetInterfaces'
     'AddressesInfoBeta':
       'type': 'object'
       'description': 'AdGuard Home addresses configuration'
@@ -2050,7 +2122,7 @@
           'type': 'string'
     'Client':
       'type': 'object'
-      'description': 'Client information'
+      'description': 'Client information.'
       'properties':
         'name':
           'type': 'string'
@@ -2058,7 +2130,7 @@
           'example': 'localhost'
         'ids':
           'type': 'array'
-          'description': 'IP, CIDR or MAC address'
+          'description': 'IP, CIDR, MAC, or client ID.'
           'items':
             'type': 'string'
         'use_global_settings':
@@ -2113,9 +2185,38 @@
           'type': 'string'
     'ClientsFindResponse':
       'type': 'array'
-      'description': 'Response to clients find operation'
+      'description': 'Client search results.'
       'items':
         '$ref': '#/components/schemas/ClientsFindEntry'
+      'example':
+      - 'cli42':
+        'name': 'Client 42'
+        'ids': ['cli42']
+        'use_global_settings': true
+        'filtering_enabled': true
+        'parental_enabled': true
+        'safebrowsing_enabled': true
+        'safesearch_enabled': true
+        'use_global_blocked_services': true
+        'blocked_services': null
+        'upstreams': null
+        'whois_info': null
+        'disallowed': false
+        'disallowed_rule': ''
+      - '1.2.3.4':
+        'name': 'Client 1-2-3-4'
+        'ids': ['1.2.3.4']
+        'use_global_settings': true
+        'filtering_enabled': true
+        'parental_enabled': true
+        'safebrowsing_enabled': true
+        'safesearch_enabled': true
+        'use_global_blocked_services': true
+        'blocked_services': null
+        'upstreams': null
+        'whois_info': null
+        'disallowed': false
+        'disallowed_rule': ''
     'AccessListResponse':
       '$ref': '#/components/schemas/AccessList'
     'AccessSetRequest':
@@ -2143,10 +2244,9 @@
       'type': 'object'
       'additionalProperties':
         '$ref': '#/components/schemas/ClientFindSubEntry'
-      'example':
-        '1.2.3.4': 'test'
     'ClientFindSubEntry':
       'type': 'object'
+      'description': 'Client information.'
       'properties':
         'name':
           'type': 'string'
@@ -2154,7 +2254,7 @@
           'example': 'localhost'
         'ids':
           'type': 'array'
-          'description': 'IP, CIDR or MAC address'
+          'description': 'IP, CIDR, MAC, or client ID.'
           'items':
             'type': 'string'
         'use_global_settings':

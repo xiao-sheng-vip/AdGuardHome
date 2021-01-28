@@ -223,6 +223,7 @@ func (s *statsCtx) periodicFlush() {
 		s.unitLock.Lock()
 		ptr := s.unit
 		s.unitLock.Unlock()
+
 		if ptr == nil {
 			break
 		}
@@ -230,6 +231,7 @@ func (s *statsCtx) periodicFlush() {
 		id := s.conf.UnitID()
 		if ptr.id == id {
 			time.Sleep(time.Second)
+
 			continue
 		}
 
@@ -243,6 +245,7 @@ func (s *statsCtx) periodicFlush() {
 		if tx == nil {
 			continue
 		}
+
 		ok1 := s.flushUnitToDB(tx, u.id, udb)
 		ok2 := s.deleteUnit(tx, id-s.conf.limit)
 		if ok1 || ok2 {
@@ -251,6 +254,7 @@ func (s *statsCtx) periodicFlush() {
 			_ = tx.Rollback()
 		}
 	}
+
 	log.Tracef("periodicFlush() exited")
 }
 
@@ -265,7 +269,7 @@ func (s *statsCtx) deleteUnit(tx *bolt.Tx, id uint32) bool {
 	return true
 }
 
-func convertMapToArray(m map[string]uint64, max int) []countPair {
+func convertMapToSlice(m map[string]uint64, max int) []countPair {
 	a := []countPair{}
 	for k, v := range m {
 		pair := countPair{}
@@ -283,7 +287,7 @@ func convertMapToArray(m map[string]uint64, max int) []countPair {
 	return a[:max]
 }
 
-func convertArrayToMap(a []countPair) map[string]uint64 {
+func convertSliceToMap(a []countPair) map[string]uint64 {
 	m := map[string]uint64{}
 	for _, it := range a {
 		m[it.Name] = it.Count
@@ -301,9 +305,9 @@ func serialize(u *unit) *unitDB {
 		udb.TimeAvg = uint32(u.timeSum / u.nTotal)
 	}
 
-	udb.Domains = convertMapToArray(u.domains, maxDomains)
-	udb.BlockedDomains = convertMapToArray(u.blockedDomains, maxDomains)
-	udb.Clients = convertMapToArray(u.clients, maxClients)
+	udb.Domains = convertMapToSlice(u.domains, maxDomains)
+	udb.BlockedDomains = convertMapToSlice(u.blockedDomains, maxDomains)
+	udb.Clients = convertMapToSlice(u.clients, maxClients)
 
 	return &udb
 }
@@ -319,9 +323,9 @@ func deserialize(u *unit, udb *unitDB) {
 		u.nResult[i] = udb.NResult[i]
 	}
 
-	u.domains = convertArrayToMap(udb.Domains)
-	u.blockedDomains = convertArrayToMap(udb.BlockedDomains)
-	u.clients = convertArrayToMap(udb.Clients)
+	u.domains = convertSliceToMap(udb.Domains)
+	u.blockedDomains = convertSliceToMap(udb.BlockedDomains)
+	u.clients = convertSliceToMap(udb.Clients)
 	u.timeSum = uint64(udb.TimeAvg) * u.nTotal
 }
 
@@ -372,7 +376,7 @@ func (s *statsCtx) loadUnitFromDB(tx *bolt.Tx, id uint32) *unitDB {
 	return &udb
 }
 
-func convertTopArray(a []countPair) []map[string]uint64 {
+func convertTopSlice(a []countPair) []map[string]uint64 {
 	m := []map[string]uint64{}
 	for _, it := range a {
 		ent := map[string]uint64{}
@@ -443,34 +447,38 @@ func (s *statsCtx) clear() {
 }
 
 // Get Client IP address
-func (s *statsCtx) getClientIP(clientIP string) string {
-	if s.conf.AnonymizeClientIP {
-		ip := net.ParseIP(clientIP)
-		if ip != nil {
-			ip4 := ip.To4()
-			const AnonymizeClientIP4Mask = 16
-			const AnonymizeClientIP6Mask = 112
-			if ip4 != nil {
-				clientIP = ip4.Mask(net.CIDRMask(AnonymizeClientIP4Mask, 32)).String()
-			} else {
-				clientIP = ip.Mask(net.CIDRMask(AnonymizeClientIP6Mask, 128)).String()
-			}
+func (s *statsCtx) getClientIP(ip net.IP) (clientIP net.IP) {
+	if s.conf.AnonymizeClientIP && ip != nil {
+		const AnonymizeClientIP4Mask = 16
+		const AnonymizeClientIP6Mask = 112
+
+		if ip.To4() != nil {
+			return ip.Mask(net.CIDRMask(AnonymizeClientIP4Mask, 32))
 		}
+
+		return ip.Mask(net.CIDRMask(AnonymizeClientIP6Mask, 128))
 	}
 
-	return clientIP
+	return ip
 }
 
 func (s *statsCtx) Update(e Entry) {
 	if e.Result == 0 ||
 		e.Result >= rLast ||
-		len(e.Domain) == 0 ||
-		!(len(e.Client) == 4 || len(e.Client) == 16) {
+		e.Domain == "" ||
+		e.Client == "" {
 		return
 	}
-	client := s.getClientIP(e.Client.String())
+
+	clientID := e.Client
+	if ip := net.ParseIP(clientID); ip != nil {
+		ip = s.getClientIP(ip)
+		clientID = ip.String()
+	}
 
 	s.unitLock.Lock()
+	defer s.unitLock.Unlock()
+
 	u := s.unit
 
 	u.nResult[e.Result]++
@@ -481,10 +489,9 @@ func (s *statsCtx) Update(e Entry) {
 		u.blockedDomains[e.Domain]++
 	}
 
-	u.clients[client]++
+	u.clients[clientID]++
 	u.timeSum += uint64(e.Time)
 	u.nTotal++
-	s.unitLock.Unlock()
 }
 
 func (s *statsCtx) loadUnits(limit uint32) ([]*unitDB, uint32) {
@@ -548,10 +555,9 @@ func (s *statsCtx) loadUnits(limit uint32) ([]*unitDB, uint32) {
   * parental-blocked
   These values are just the sum of data for all units.
 */
-func (s *statsCtx) getData() map[string]interface{} {
+func (s *statsCtx) getData() (statsResponse, bool) {
 	limit := s.conf.limit
 
-	d := map[string]interface{}{}
 	timeUnit := Hours
 	if limit/24 > 7 {
 		timeUnit = Days
@@ -559,7 +565,7 @@ func (s *statsCtx) getData() map[string]interface{} {
 
 	units, firstID := s.loadUnits(limit)
 	if units == nil {
-		return nil
+		return statsResponse{}, false
 	}
 
 	// per time unit counters:
@@ -598,8 +604,8 @@ func (s *statsCtx) getData() map[string]interface{} {
 				m[it.Name] += it.Count
 			}
 		}
-		a2 := convertMapToArray(m, max)
-		return convertTopArray(a2)
+		a2 := convertMapToSlice(m, max)
+		return convertTopSlice(a2)
 	}
 
 	dnsQueries := statsCollector(func(u *unitDB) (num uint64) { return u.NTotal })
@@ -607,18 +613,14 @@ func (s *statsCtx) getData() map[string]interface{} {
 		log.Fatalf("len(dnsQueries) != limit: %d %d", len(dnsQueries), limit)
 	}
 
-	statsData := map[string]interface{}{
-		"dns_queries":           dnsQueries,
-		"blocked_filtering":     statsCollector(func(u *unitDB) (num uint64) { return u.NResult[RFiltered] }),
-		"replaced_safebrowsing": statsCollector(func(u *unitDB) (num uint64) { return u.NResult[RSafeBrowsing] }),
-		"replaced_parental":     statsCollector(func(u *unitDB) (num uint64) { return u.NResult[RParental] }),
-		"top_queried_domains":   topsCollector(maxDomains, func(u *unitDB) (pairs []countPair) { return u.Domains }),
-		"top_blocked_domains":   topsCollector(maxDomains, func(u *unitDB) (pairs []countPair) { return u.BlockedDomains }),
-		"top_clients":           topsCollector(maxClients, func(u *unitDB) (pairs []countPair) { return u.Clients }),
-	}
-
-	for dataKey, dataValue := range statsData {
-		d[dataKey] = dataValue
+	data := statsResponse{
+		DNSQueries:           dnsQueries,
+		BlockedFiltering:     statsCollector(func(u *unitDB) (num uint64) { return u.NResult[RFiltered] }),
+		ReplacedSafebrowsing: statsCollector(func(u *unitDB) (num uint64) { return u.NResult[RSafeBrowsing] }),
+		ReplacedParental:     statsCollector(func(u *unitDB) (num uint64) { return u.NResult[RParental] }),
+		TopQueried:           topsCollector(maxDomains, func(u *unitDB) (pairs []countPair) { return u.Domains }),
+		TopBlocked:           topsCollector(maxDomains, func(u *unitDB) (pairs []countPair) { return u.BlockedDomains }),
+		TopClients:           topsCollector(maxClients, func(u *unitDB) (pairs []countPair) { return u.Clients }),
 	}
 
 	// total counters:
@@ -638,27 +640,25 @@ func (s *statsCtx) getData() map[string]interface{} {
 		sum.NResult[RParental] += u.NResult[RParental]
 	}
 
-	d["num_dns_queries"] = sum.NTotal
-	d["num_blocked_filtering"] = sum.NResult[RFiltered]
-	d["num_replaced_safebrowsing"] = sum.NResult[RSafeBrowsing]
-	d["num_replaced_safesearch"] = sum.NResult[RSafeSearch]
-	d["num_replaced_parental"] = sum.NResult[RParental]
+	data.NumDNSQueries = sum.NTotal
+	data.NumBlockedFiltering = sum.NResult[RFiltered]
+	data.NumReplacedSafebrowsing = sum.NResult[RSafeBrowsing]
+	data.NumReplacedSafesearch = sum.NResult[RSafeSearch]
+	data.NumReplacedParental = sum.NResult[RParental]
 
-	avgTime := float64(0)
 	if timeN != 0 {
-		avgTime = float64(sum.TimeAvg/uint32(timeN)) / 1000000
+		data.AvgProcessingTime = float64(sum.TimeAvg/uint32(timeN)) / 1000000
 	}
-	d["avg_processing_time"] = avgTime
 
-	d["time_units"] = "hours"
+	data.TimeUnits = "hours"
 	if timeUnit == Days {
-		d["time_units"] = "days"
+		data.TimeUnits = "days"
 	}
 
-	return d
+	return data, true
 }
 
-func (s *statsCtx) GetTopClientsIP(maxCount uint) []string {
+func (s *statsCtx) GetTopClientsIP(maxCount uint) []net.IP {
 	units, _ := s.loadUnits(s.conf.limit)
 	if units == nil {
 		return nil
@@ -671,10 +671,10 @@ func (s *statsCtx) GetTopClientsIP(maxCount uint) []string {
 			m[it.Name] += it.Count
 		}
 	}
-	a := convertMapToArray(m, int(maxCount))
-	d := []string{}
+	a := convertMapToSlice(m, int(maxCount))
+	d := []net.IP{}
 	for _, it := range a {
-		d = append(d, it.Name)
+		d = append(d, net.ParseIP(it.Name))
 	}
 	return d
 }
