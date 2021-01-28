@@ -3,6 +3,7 @@ import UI from './stores/ui';
 import Login from './stores/Login';
 import Dashboard from './stores/Dasnboard';
 import System from './stores/System';
+import GeneralSettings from './stores/GeneralSettings';
 
 export class Store {
     ui: UI;
@@ -13,11 +14,14 @@ export class Store {
 
     system: System;
 
+    generalSettings: GeneralSettings;
+
     constructor() {
         this.ui = new UI(this);
         this.login = new Login(this);
         this.dashboard = new Dashboard(this);
         this.system = new System(this);
+        this.generalSettings = new GeneralSettings(this);
     }
 
     init() {

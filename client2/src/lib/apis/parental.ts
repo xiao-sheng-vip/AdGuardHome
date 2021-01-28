@@ -14,7 +14,7 @@ export default class ParentalApi {
     }
 
     static async parentalEnable(data: string): Promise<number | Error> {
-        const params =  String(data);
+        const params = String(data);
         return await fetch(`/control/parental/enable`, {
             method: 'POST',
             headers: {

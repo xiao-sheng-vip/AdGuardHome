@@ -62,9 +62,6 @@ module.exports = merge(baseConfig, {
                 use: [
                         {
                             loader: MiniCssExtractPlugin.loader,
-                            options: {
-                                esModules: true,
-                            }
                         },
                         {
                             loader: 'css-loader',

@@ -36,7 +36,7 @@ export const Paths: Record<RoutePath, string> = {
     SettingsEncryption: pathBuilder('settings/encryption'),
     SettingsClients: pathBuilder('settings/clients'),
     SettingsDhcp: pathBuilder('settings/dhcp'),
-    Login: pathBuilder('login'),
+    Login: pathBuilder(''),
     ForgotPassword: pathBuilder('forgot_password'),
 };
 

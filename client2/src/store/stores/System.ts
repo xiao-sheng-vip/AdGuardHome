@@ -11,6 +11,8 @@ import { IStore } from './utils';
 export default class System implements IStore {
     rootStore: Store;
 
+    inited = false;
+
     status: ServerStatus | undefined;
 
     profile: ProfileInfo | undefined;
@@ -19,6 +21,7 @@ export default class System implements IStore {
         this.rootStore = rootStore;
         makeAutoObservable(this, {
             rootStore: false,
+            inited: observable,
             getServerStatus: flow,
             init: flow,
             setProfile: action,
@@ -37,6 +40,7 @@ export default class System implements IStore {
         if (!this.profile) {
             yield this.getProfile();
         }
+        this.inited = true;
     }
 
     setProfile(profile: ProfileInfo) {

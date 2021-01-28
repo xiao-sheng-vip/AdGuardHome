@@ -11,6 +11,7 @@ import { Login, ForgotPassword } from '../Login';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
 import SetupGuide from '../SetupGuide';
+import { GeneralSettings } from '../Settings';
 
 import s from './Routes.module.pcss';
 
@@ -21,15 +22,13 @@ const AuthRoutes: FC = React.memo(() => {
         <Switch>
             <Route
                 exact
-                path={Paths.Login}
-                component={Login}
-            />
-            <Route
-                exact
                 path={Paths.ForgotPassword}
                 component={ForgotPassword}
             />
-            <Redirect to={Paths.Login} />
+            <Route
+                path={Paths.Login}
+                component={Login}
+            />
         </Switch>
     );
 });
@@ -51,6 +50,11 @@ const AppRoutes: FC = observer(() => {
                             exact
                             path={Paths.SetupGuide}
                             component={SetupGuide}
+                        />
+                        <Route
+                            exact
+                            path={Paths.SettingsGeneral}
+                            component={GeneralSettings}
                         />
                         <Redirect to={Paths.Dashboard} />
                     </Switch>

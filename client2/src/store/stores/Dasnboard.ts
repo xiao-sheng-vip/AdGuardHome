@@ -17,6 +17,8 @@ import { IStore } from './utils';
 export default class Dashboard implements IStore {
     rootStore: Store;
 
+    inited = false;
+
     stats: Stats | undefined;
 
     statsConfig: StatsConfig | undefined;
@@ -29,6 +31,7 @@ export default class Dashboard implements IStore {
         this.rootStore = rootStore;
         makeAutoObservable(this, {
             rootStore: false,
+            inited: observable,
             init: flow,
             getStatsConfig: flow,
             getTlsConfig: flow,
@@ -48,6 +51,7 @@ export default class Dashboard implements IStore {
         yield this.getStatsConfig();
         yield this.getTlsConfig();
         yield this.getStats();
+        this.inited = true;
     }
 
     * getStats() {
