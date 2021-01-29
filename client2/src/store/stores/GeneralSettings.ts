@@ -175,7 +175,7 @@ export default class SomeStore implements IStore {
     }
 
     * parentalEnable() {
-        // magic;
+        // TODO: remove magic;
         const response = yield parentalApi.parentalEnable('sensitivity=TEEN');
         const { result } = errorChecker(response);
         if (result) {

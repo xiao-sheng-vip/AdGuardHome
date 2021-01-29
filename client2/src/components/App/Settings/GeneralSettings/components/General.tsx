@@ -32,8 +32,21 @@ const General: FC = observer(() => {
 
     const onSubmit = async (values: InitialValues, helpers: FormikHelpers<InitialValues>) => {
         // await generalSettings.updateQueryLogConfig(values);
+        if (initialValues.parental !== values.parental) {
+            generalSettings[values.parental ? 'parentalEnable' : 'parentalDisable']();
+        }
+        if (initialValues.safesearch !== values.safesearch) {
+            generalSettings[values.safesearch ? 'safebrowsingEnable' : 'safebrowsingDisable']();
+        }
         if (initialValues.safebrowsing !== values.safebrowsing) {
-            // await generalSettings.
+            generalSettings[values.safebrowsing ? 'safebrowsingEnable' : 'safebrowsingDisable']();
+        }
+        if (initialValues.enabled !== values.enabled
+            || initialValues.interval !== values.interval) {
+            generalSettings.updateFilteringConfig({
+                interval: values.interval,
+                enabled: values.enabled,
+            });
         }
         helpers.setSubmitting(false);
     };
